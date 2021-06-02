@@ -1,12 +1,12 @@
 import { render } from "@testing-library/react";
 import React from "react";
 
-const Song = () => {
+const Song = ({currentSong}) => {
 	return(
 		<div className="song-container">
-			<h2>Picture</h2>
-			<h2>Song Name</h2>
-			<h2>Artist</h2>
+			<img src={currentSong.cover} alt="Song cover"/>
+			<h2>{currentSong.name}</h2>
+			<h3>{currentSong.artist}</h3>
 		</div>
 	)
 }
