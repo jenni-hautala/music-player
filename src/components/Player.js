@@ -43,7 +43,7 @@ const Player = ({ isPlaying, setIsPlaying, currentSong }) => {
 	const getTime = (time) =>
 			`${Math.floor(time / 60)}:${('0' + Math.floor(time % 60)).slice(-2)}`
 	const dragHandler = (e) => {
-		// Päitetään audiokohta siihen mihin draggaillaan
+		// Päivitetään audiokohta siihen mihin draggaillaan
 		audioRef.current.currentTime = e.target.value;
 
 		// Rangen eri arvot kun draggaillaan: e.target.value
