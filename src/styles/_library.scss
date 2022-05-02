@@ -1,14 +1,22 @@
-.library{
+.library {
     position: fixed;
     top: 0;
     left: 0;
     width: 20rem;
     height: 100%;
+    background-color: rgba(165, 132, 137, 0.101);
+    box-shadow: 2px 2px 50px gray;
+    overflow: scroll;
+    h2 {
+        padding: 2rem;
+    }
 }
 
 .library-song {
     display: flex;
     align-items: center;
+    flex-direction: column;
+    padding: 1rem 2rem 1rem 2rem;
     img {
         width: 30%;
     }
