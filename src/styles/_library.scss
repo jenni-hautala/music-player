@@ -15,9 +15,38 @@
 .library-song {
     display: flex;
     align-items: center;
-    flex-direction: column;
     padding: 1rem 2rem 1rem 2rem;
+	cursor: pointer;
     img {
         width: 30%;
     }
+	&:hover {
+		background-color: rgb(187, 187, 233);
+	}
+}
+
+.song-description {
+	padding-left: 1rem;
+	h3 {
+		font-size: 1rem;
+	}
+	h4 {
+		font-size: 0.75rem;
+	}
+}
+
+* {
+	scrollbar-width: thin;
+	scrollbar-color: rgba(155, 155, 155, 0.5) transparent;
+}
+*::-webkit-scrollbar {
+	width: 5px;
+}
+*::-webkit-scrollbar-track {
+	background: transparent;
+}
+*::-webkit-scrollbar-thumb {
+	background-color: rgba(155, 155, 155, 0.5);
+	border-radius: 20px;
+	border: transparent;
 }
