@@ -3,7 +3,7 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
 import { faPlay } from "@fortawesome/free-solid-svg-icons/faPlay";
 import { faPause } from "@fortawesome/free-solid-svg-icons/faPause";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect } from "react";
 
 const Player = ({
   isPlaying,
@@ -12,8 +12,28 @@ const Player = ({
   audioRef,
   setSongInfo,
   songInfo,
+  songs,
+  setCurrentSong,
+  setSongs,
 }) => {
-  // State
+  // UseEffect
+  useEffect(() => {
+    // Add active state
+    const newSongs = songs.map((song) => {
+      if (song.id === currentSong.id) {
+        return {
+          ...song, // Kaikki muut pysyy samana
+          active: true, // vain active muuttuu
+        };
+      } else {
+        return {
+          ...song,
+          active: false,
+        };
+      }
+    });
+    setSongs(newSongs);
+  }, [currentSong]);
 
   // Event Handlers
   const playSongHandler = () => {
@@ -39,6 +59,16 @@ const Player = ({
     // Päivitetään songInfo-objektin currentTime siihen mihin draggaillaan
     setSongInfo({ ...songInfo, currentTime: e.target.value });
   };
+  const skipTrackHandler = (direction) => {
+    let currentIndex = songs.findIndex((song) => song.id === currentSong.id); // Ei saada nykyisen biisin indexiä muuten ku vertaamalla sitä koko laulujen listaan
+    if (direction === "skip-forward") {
+      setCurrentSong(songs[(currentIndex + 1) % songs.length]); // Menee ympäri kun steppaa yli
+    } else if ((currentIndex - 1) % songs.length === -1) {
+      setCurrentSong(songs[songs.length - 1]);
+    } else {
+      setCurrentSong(songs[(currentIndex - 1) % songs.length]);
+    }
+  };
 
   return (
     <div className="player">
@@ -46,7 +76,7 @@ const Player = ({
         <p>{getTime(songInfo.currentTime)}</p>
         <input
           min={0}
-          max={songInfo.duration}
+          max={songInfo.duration || 0} // TODO: poisti errorin, mutta onko paras vaihtoehto
           type="range"
           value={songInfo.currentTime}
           onChange={dragHandler}
@@ -54,7 +84,12 @@ const Player = ({
         <p>{getTime(songInfo.duration)}</p>
       </div>
       <div className="play-control">
-        <FontAwesomeIcon className="skip-back" size="2x" icon={faAngleLeft} />
+        <FontAwesomeIcon
+          onClick={() => skipTrackHandler("skip-back")}
+          className="skip-back"
+          size="2x"
+          icon={faAngleLeft}
+        />
         <FontAwesomeIcon
           onClick={playSongHandler}
           className="play"
@@ -62,6 +97,7 @@ const Player = ({
           icon={isPlaying ? faPause : faPlay}
         />
         <FontAwesomeIcon
+          onClick={() => skipTrackHandler("skip-forward")}
           className="skip-forward"
           size="2x"
           icon={faAngleRight}
