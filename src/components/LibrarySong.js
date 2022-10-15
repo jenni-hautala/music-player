@@ -8,7 +8,7 @@ const LibrarySong = ({
   isPlaying,
   setSongs,
 }) => {
-  const songSelectHandler = () => {
+  const songSelectHandler = async () => {
     setCurrentSong(song);
     // Add active state
     const newSongs = songs.map((songOther) => {
@@ -24,18 +24,10 @@ const LibrarySong = ({
         };
       }
     });
-    setSongs(newSongs);
-    // Tsekkaa soiko biisi, odota hetki jos ei oo vielä ladannu
-    if (isPlaying) {
-      const playPromise = audioRef.current.play();
-      if (playPromise !== undefined) {
-        playPromise.then((audio) => {
-          audioRef.current.play();
-        });
-      }
-    }
+    await setSongs(newSongs);
   };
-
+  // Check if song is playing
+  if (isPlaying) audioRef.current.play();
   return (
     <div
       onClick={songSelectHandler}

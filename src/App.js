@@ -6,8 +6,8 @@ import Library from "./components/Library";
 import Nav from "./components/Nav";
 // Import Styles
 import "./styles/app.scss";
-// Import Util
-import data from "./util";
+// Import Data
+import data from "./data";
 
 const App = () => {
   // Ref
@@ -21,6 +21,7 @@ const App = () => {
     // Huom! Nää ei saa olla null
     currentTime: 0,
     duration: 0,
+    animationPercentage: 0,
   });
   const [libraryStatus, setLibraryStatus] = useState(false);
 
@@ -28,9 +29,23 @@ const App = () => {
   const timeUpdateHandler = (e) => {
     const current = e.target.currentTime;
     const duration = e.target.duration;
+    // Calculate the percentage
+    const roundedCurrent = Math.round(current);
+    const roundedDuration = Math.round(duration);
+    const animation = Math.round((roundedCurrent / roundedDuration) * 100);
     // Setting song info as an object
     // current time changes
-    setSongInfo({ ...songInfo, currentTime: current, duration });
+    setSongInfo({
+      ...songInfo,
+      currentTime: current,
+      duration,
+      animationPercentage: animation,
+    });
+  };
+  const songEndHandler = async () => {
+    let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
+    await setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+    if (isPlaying) audioRef.current.play();
   };
 
   return (
@@ -61,6 +76,7 @@ const App = () => {
         onTimeUpdate={timeUpdateHandler}
         ref={audioRef}
         src={currentSong.audio}
+        onEnded={songEndHandler}
       ></audio>
     </div>
   );

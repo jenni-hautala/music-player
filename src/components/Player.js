@@ -59,28 +59,41 @@ const Player = ({
     // Päivitetään songInfo-objektin currentTime siihen mihin draggaillaan
     setSongInfo({ ...songInfo, currentTime: e.target.value });
   };
-  const skipTrackHandler = (direction) => {
+  const skipTrackHandler = async (direction) => {
     let currentIndex = songs.findIndex((song) => song.id === currentSong.id); // Ei saada nykyisen biisin indexiä muuten ku vertaamalla sitä koko laulujen listaan
     if (direction === "skip-forward") {
-      setCurrentSong(songs[(currentIndex + 1) % songs.length]); // Menee ympäri kun steppaa yli
+      await setCurrentSong(songs[(currentIndex + 1) % songs.length]); // Menee ympäri kun steppaa yli
     } else if ((currentIndex - 1) % songs.length === -1) {
-      setCurrentSong(songs[songs.length - 1]);
+      await setCurrentSong(songs[songs.length - 1]);
     } else {
-      setCurrentSong(songs[(currentIndex - 1) % songs.length]);
+      await setCurrentSong(songs[(currentIndex - 1) % songs.length]);
     }
+    if (isPlaying) audioRef.current.play();
+  };
+  // Add the styles
+  const trackAnim = {
+    transform: `translateX(${songInfo.animationPercentage}%)`,
   };
 
   return (
     <div className="player">
       <div className="time-control">
         <p>{getTime(songInfo.currentTime)}</p>
-        <input
-          min={0}
-          max={songInfo.duration || 0} // TODO: poisti errorin, mutta onko paras vaihtoehto
-          type="range"
-          value={songInfo.currentTime}
-          onChange={dragHandler}
-        />
+        <div
+          style={{
+            background: `linear-gradient(to right, ${currentSong.color[0]}, ${currentSong.color[1]})`,
+          }}
+          className="track"
+        >
+          <input
+            min={0}
+            max={songInfo.duration || 0} // TODO: poisti errorin, mutta onko paras vaihtoehto
+            type="range"
+            value={songInfo.currentTime}
+            onChange={dragHandler}
+          />
+          <div style={trackAnim} className="animate-track"></div>
+        </div>
         <p>{getTime(songInfo.duration)}</p>
       </div>
       <div className="play-control">
