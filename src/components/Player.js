@@ -3,7 +3,7 @@ import { faAngleRight } from "@fortawesome/free-solid-svg-icons/faAngleRight";
 import { faPlay } from "@fortawesome/free-solid-svg-icons/faPlay";
 import { faPause } from "@fortawesome/free-solid-svg-icons/faPause";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import React, { useEffect } from "react";
+import React from "react";
 
 const Player = ({
   isPlaying,
@@ -16,26 +16,23 @@ const Player = ({
   setCurrentSong,
   setSongs,
 }) => {
-  // UseEffect
-  useEffect(() => {
-    // Add active state
-    const newSongs = songs.map((song) => {
-      if (song.id === currentSong.id) {
-        return {
-          ...song, // Kaikki muut pysyy samana
-          active: true, // vain active muuttuu
-        };
-      } else {
-        return {
-          ...song,
-          active: false,
-        };
-      }
-    });
-    setSongs(newSongs);
-  }, [currentSong]);
-
   // Event Handlers
+  const activeLibraryHandler = (nextPrev) => {
+	const newSongs = songs.map((song) => {
+		if (song.id === nextPrev.id) {
+		  return {
+			...song, // Kaikki muut pysyy samana
+			active: true, // vain active muuttuu
+		  };
+		} else {
+		  return {
+			...song,
+			active: false,
+		  };
+		}
+	  });
+	  setSongs(newSongs);
+  }
   const playSongHandler = () => {
     if (isPlaying) {
       audioRef.current.pause();
@@ -63,10 +60,13 @@ const Player = ({
     let currentIndex = songs.findIndex((song) => song.id === currentSong.id); // Ei saada nykyisen biisin indexiä muuten ku vertaamalla sitä koko laulujen listaan
     if (direction === "skip-forward") {
       await setCurrentSong(songs[(currentIndex + 1) % songs.length]); // Menee ympäri kun steppaa yli
+	  activeLibraryHandler(songs[(currentIndex + 1) % songs.length]);
     } else if ((currentIndex - 1) % songs.length === -1) {
       await setCurrentSong(songs[songs.length - 1]);
+	  activeLibraryHandler(songs[songs.length - 1]);
     } else {
       await setCurrentSong(songs[(currentIndex - 1) % songs.length]);
+	  activeLibraryHandler(songs[(currentIndex - 1) % songs.length]);
     }
     if (isPlaying) audioRef.current.play();
   };

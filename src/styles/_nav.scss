@@ -3,6 +3,7 @@ nav {
     display: flex;
     justify-content: space-around;
     align-items: center;
+	background-color: rgb(243, 243, 243);
     button {
         background: transparent;
         border: none;
@@ -15,4 +16,12 @@ nav {
             color: white;
         }
     }
+}
+
+@media screen and (max-width: 768px) {
+	nav {
+		button {
+			z-index: 10;
+		}
+	}
 }
