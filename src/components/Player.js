@@ -18,21 +18,21 @@ const Player = ({
 }) => {
   // Event Handlers
   const activeLibraryHandler = (nextPrev) => {
-	const newSongs = songs.map((song) => {
-		if (song.id === nextPrev.id) {
-		  return {
-			...song, // Kaikki muut pysyy samana
-			active: true, // vain active muuttuu
-		  };
-		} else {
-		  return {
-			...song,
-			active: false,
-		  };
-		}
-	  });
-	  setSongs(newSongs);
-  }
+    const newSongs = songs.map((song) => {
+      if (song.id === nextPrev.id) {
+        return {
+          ...song,
+          active: true,
+        };
+      } else {
+        return {
+          ...song,
+          active: false,
+        };
+      }
+    });
+    setSongs(newSongs);
+  };
   const playSongHandler = () => {
     if (isPlaying) {
       audioRef.current.pause();
@@ -43,30 +43,32 @@ const Player = ({
   };
 
   /**
-   * For formatting time nicely
-   * @param {*} time
+   * Formatting time
+   * @param time
    */
   const getTime = (time) =>
     `${Math.floor(time / 60)}:${("0" + Math.floor(time % 60)).slice(-2)}`;
   const dragHandler = (e) => {
-    // Päivitetään audiokohta siihen mihin draggaillaan
+    // Update audio to the dragged point
     audioRef.current.currentTime = e.target.value;
 
-    // Rangen eri arvot kun draggaillaan: e.target.value
-    // Päivitetään songInfo-objektin currentTime siihen mihin draggaillaan
+    // Getting the value of range with e.target.value
+    // Updating currentTime matchin with dragging
     setSongInfo({ ...songInfo, currentTime: e.target.value });
   };
   const skipTrackHandler = async (direction) => {
-    let currentIndex = songs.findIndex((song) => song.id === currentSong.id); // Ei saada nykyisen biisin indexiä muuten ku vertaamalla sitä koko laulujen listaan
+    // Getting current song with the list of all songs
+    let currentIndex = songs.findIndex((song) => song.id === currentSong.id);
+    // Functionalities for the next and previous songs on first and last songs in the library
     if (direction === "skip-forward") {
-      await setCurrentSong(songs[(currentIndex + 1) % songs.length]); // Menee ympäri kun steppaa yli
-	  activeLibraryHandler(songs[(currentIndex + 1) % songs.length]);
+      await setCurrentSong(songs[(currentIndex + 1) % songs.length]);
+      activeLibraryHandler(songs[(currentIndex + 1) % songs.length]);
     } else if ((currentIndex - 1) % songs.length === -1) {
       await setCurrentSong(songs[songs.length - 1]);
-	  activeLibraryHandler(songs[songs.length - 1]);
+      activeLibraryHandler(songs[songs.length - 1]);
     } else {
       await setCurrentSong(songs[(currentIndex - 1) % songs.length]);
-	  activeLibraryHandler(songs[(currentIndex - 1) % songs.length]);
+      activeLibraryHandler(songs[(currentIndex - 1) % songs.length]);
     }
     if (isPlaying) audioRef.current.play();
   };
@@ -87,14 +89,14 @@ const Player = ({
         >
           <input
             min={0}
-            max={songInfo.duration || 0} // TODO: poisti errorin, mutta onko paras vaihtoehto
+            max={songInfo.duration || 0}
             type="range"
             value={songInfo.currentTime}
             onChange={dragHandler}
           />
           <div style={trackAnim} className="animate-track"></div>
         </div>
-        <p>{getTime(songInfo.duration)}</p>
+        <p>{getTime(songInfo.duration || 0)}</p>
       </div>
       <div className="play-control">
         <FontAwesomeIcon

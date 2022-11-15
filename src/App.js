@@ -18,7 +18,6 @@ const App = () => {
   const [currentSong, setCurrentSong] = useState(songs[0]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [songInfo, setSongInfo] = useState({
-    // Huom! Nää ei saa olla null
     currentTime: 0,
     duration: 0,
     animationPercentage: 0,
@@ -34,7 +33,7 @@ const App = () => {
     const roundedDuration = Math.round(duration);
     const animation = Math.round((roundedCurrent / roundedDuration) * 100);
     // Setting song info as an object
-    // current time changes
+    // (Current time changes)
     setSongInfo({
       ...songInfo,
       currentTime: current,

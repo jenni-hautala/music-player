@@ -10,12 +10,12 @@ const LibrarySong = ({
 }) => {
   const songSelectHandler = async () => {
     setCurrentSong(song);
-    // Add active state
+    // Add active state, others remain same
     const newSongs = songs.map((songOther) => {
       if (songOther.id === song.id) {
         return {
-          ...song, // Kaikki muut pysyy samana
-          active: true, // vain active muuttuu
+          ...song,
+          active: true,
         };
       } else {
         return {
